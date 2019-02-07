@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ChatService } from 'src/app/services/chat.service';
-import { StorageService } from 'src/app/services/services';
+import { StorageService, Events } from 'src/app/services/services';
 import { ChatSummary } from 'src/app/models/ChatSummary';
 import { Contact } from 'src/app/models/Contact';
 import { Chat } from 'src/app/models/Chat';
@@ -25,7 +25,9 @@ export class ChatsViewComponent implements OnInit {
     return doc.body.textContent || '';
   }
 
-  constructor(private chatService: ChatService, private storageService: StorageService) {
+  constructor(private events: Events,
+    private chatService: ChatService,
+    private storageService: StorageService) {
     this.currentUser = storageService.get('user');
   }
 
@@ -81,8 +83,10 @@ export class ChatsViewComponent implements OnInit {
     });
   }
 
-  public select(chatId: number): void {
+  public select(chatId: number, chat: Chat): void {
     this.selectedChatId = chatId;
+
+    this.events.next(`chats::selected`, chat);
   }
 
   public isSelected(chatId: number): boolean {

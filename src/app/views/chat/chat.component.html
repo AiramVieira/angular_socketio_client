@@ -1,12 +1,13 @@
-<div style="display:flex;flex-flow: column;">
-  <div class="container-fluid m-0 p-0">
-    <div class="row m-0 p-3 border">
-      <div class="col-10">
+<div class="chat-wrapper d-flex flex-column h-100">
+
+  <div class="chat-header container-fluid m-0 p-0 border">
+    <div class="d-flex row m-0 px-4 py-3 h-100">
+      <div class="d-flex align-items-center flex-grow-1">
         <span class="col-md-10" *ngIf="chat.subject != ''" [title]="chat.subject">
           {{ chat.subject }}
         </span>
       </div>
-      <div class="col-2">
+      <div class="d-flex align-items-center">
         <div *ngIf="chat.subject != ''">
           <label class="text-dark font-weight-light m-0 p-0" matTooltip="Mais Opções" [matTooltipPosition]="'above'">
             <button class="btn btn-link text-dark w-100 m-0 p-0" [matMenuTriggerFor]="menu">
@@ -42,82 +43,70 @@
     <mat-divider *ngIf="chat.id"></mat-divider>
   </div>
 
-  <!-- <div #scrollContent *ngIf="chat.id && informacoes === false && archive == null || archive == 'undefined'" class="chat-content"
-    style="margin-bottom: 50px;">
-    <div #messages *ngFor="let message of _messages; let i = index">
+  <div #scrollContent class="chat-messages-list d-flex flex-column flex-grow-1 bg-light px-4 py-2 overflow-auto">
+    <div *ngFor="let message of messages; let i = index" class="m-0 mb-1">
 
-      <div class="row m-0">
-        <div class="col-12 text-center">
-          <div class="m-0 date-bubble" *ngIf="shouldPlaceTimestampBubble(i-1, i, _messages[i-1], message)">
-            {{ message.updatedAt | date: 'dd/MM/yyyy' }}
-          </div>
+      <div class="col-12 h-100 text-center">
+        <div class="date-bubble m-0" *ngIf="shouldPlaceTimestampBubble(i-1, i, messages[i-1], message)">
+          <small class="text-muted">{{ message.updatedAt | date: 'dd/MM/yyyy' }}</small>
         </div>
-        <div class="col-12 text-center">
-          <div class="m-0 mt-1 date-bubble" *ngIf="message.type === 3">
-            <p [innerHTML]="message.content"></p>
-            <span class="message-timestamp float-right">
-              {{ message.updatedAt | date:'HH:mm' }}
-            </span>
-          </div>
+      </div>
+
+      <div class="col-12 h-100 text-center">
+        <div class="date-bubble m-0 mt-1" *ngIf="message.type === 3">
+          <small class="text-muted" [innerHTML]="message.content"></small>
+          <small class="text-muted"> {{ message.updatedAt | date:'HH:mm' }} </small>
         </div>
-        <div class="container-fluid py-1 px-2 w-100 bubble text-right" *ngIf="message.contact.id === user.contact.id && message.type !== 3">
-          <div class="right-bubble m-0" style="display:inline-block;">
-            <div *ngIf="i-1 >= 0 ? _messages[i-1].contact.id != message.contact.id 
-            || _messages[i-1].type == 3: true"
-              class="bubble-title">
-              <span class="msg-name float-left">
-                {{ message.contact.shortDescription }}
-              </span>
-            </div>
-            <div class="bubble-message">
-              <p class="float-left text-wrap" [innerHTML]="message.content"></p>
-              <div class="bubble-details float-right">
-                <span class="message-timestamp float-right">
-                  {{ message.updatedAt | date:'HH:mm' }}
-                </span>
-                <span *ngIf="message.status == 0" class="message-status">
-                  <i class="far fa-clock text-dark f10"></i>
-                </span>
-                <span *ngIf="message.status == 1" class="message-status">
-                  <i class="fas fa-check text-dark f10"></i>
-                </span>
-                <span *ngIf="message.status == 2" class="message-status">
-                  <i class="fas fa-check-double text-dark f10"></i>
-                </span>
-                <span *ngIf="message.status == 3" class="message-status">
-                  <i style="color: #EA4D7E !important;" class="fas fa-check-double text-secondary f10"></i>
-                </span>
-              </div>
+      </div>
+
+      <div *ngIf="message.contact.id === currentUser.contact.id && message.type !== 3" class="col-12 px-2 py-1 w-100 h-100 bubble text-right">
+        <div class="right-bubble d-inline-block m-0 px-2">
+
+          <div *ngIf="i-1 >= 0 ? messages[i-1].contact.id != message.contact.id || messages[i-1].type == 3: true" class="bubble-title">
+            <strong class="float-left"> {{ message.contact.shortDescription }} </strong>
+          </div>
+
+          <div class="bubble-message d-flex align-items-center py-1">
+            <p class="d-flex flex-grow-1 align-self-end float-left m-0 text-wrap" [innerHTML]="message.content"></p>
+            <div class="d-flex align-self-end float-right">
+              <small class="message-timestamp mx-2 float-right text-muted">
+                {{ message.updatedAt | date:'HH:mm' }}
+              </small>
+              <small *ngIf="message.status == 0" class="message-status">
+                <i class="far fa-clock text-muted" data-fa-transform="shrink-2"></i>
+              </small>
+              <small *ngIf="message.status == 1" class="message-status">
+                <i class="fas fa-check text-muted" data-fa-transform="shrink-2"></i>
+              </small>
+              <small *ngIf="message.status == 2" class="message-status">
+                <i class="fas fa-check-double text-muted" data-fa-transform="shrink-2"></i>
+              </small>
+              <small *ngIf="message.status == 3" class="message-status">
+                <i class="fas fa-check-double text-primary" data-fa-transform="shrink-2"></i>
+              </small>
             </div>
           </div>
         </div>
-        <div class="container-fluid m-0 py-1 px-2 w-100 bubble text-left" *ngIf="message.contact.id !== user.contact.id && message.type !== 3">
-          <div class="left-bubble">
-            <div *ngIf="i-1 >= 0 ? _messages[i-1].contact.id != message.contact.id 
-              || _messages[i-1].type == 3: true"
-              class="bubble-title">
-              <span class="msg-name float-left">
-                {{message.contact.shortDescription}}
-              </span>
-            </div>
-            <div class="bubble-message">
-              <p class="float-left text-wrap" [innerHTML]="message.content"></p>
-              <div class="bubble-details float-right">
-                <span class="message-timestamp float-right">
-                  {{ message.updatedAt | date:'HH:mm' }}
-                </span>
-                <span class="msg-name" style="padding: 0px 2px 0px 12px">
-                </span>
-              </div>
+      </div>
+      <div *ngIf="message.contact.id !== currentUser.contact.id && message.type !== 3" class="container-fluid m-0 py-1 px-2 w-100 bubble text-left">
+        <div class="left-bubble d-inline-block m-0 px-2">
+          <div *ngIf="i-1 >= 0 ? messages[i-1].contact.id != message.contact.id || messages[i-1].type == 3: true" class="bubble-title">
+            <strong class="float-left"> {{ message.contact.shortDescription }} </strong>
+          </div>
+          <div class="bubble-message d-flex align-items-center py-1">
+            <p class="d-flex flex-grow-1 align-self-end float-left m-0 text-wrap" [innerHTML]="message.content"></p>
+            <div class="d-flex align-self-end float-right">
+              <small class="message-timestamp mx-2 float-right text-muted">
+                {{ message.updatedAt | date:'HH:mm' }}
+              </small>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 
-
-  <div class="message-composer">
+  <div class="chat-message-composer">
     <input [(ngModel)]="content" (keyup.enter)="send(content)" placeholder="Escreva a mensagem">
     <button class="btn btn-link border-0" (click)="send(content)" matTooltip="Enviar Mensagem">
       <i class="fas fa-paper-plane"></i>

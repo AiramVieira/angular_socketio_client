@@ -1,6 +1,6 @@
 <div class="container-fluid p-0 m-0" style="background-color: #fff">
   <div class="row m-0 p-0" *ngFor="let message of chats">
-    <div class="btn btn-chat text-left w-100 px-2 py-2" [class.active]="isSelected(message.chat.id)" (click)="select(message.chat.id)">
+    <div class="btn btn-chat text-left w-100 px-2 py-2" [class.active]="isSelected(message.chat.id)" (click)="select(message.chat.id, message.chat)">
       <div class="d-flex align-content-center py-1">
         <span class="w-100 m-0" [title]="message.chat.subject">
           {{ message.chat.subject }}
