@@ -28,6 +28,7 @@ import {
 
 import { ChatViewComponent } from './chat.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { ScrollDispatchModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 

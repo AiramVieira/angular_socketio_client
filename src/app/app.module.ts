@@ -12,6 +12,11 @@ import { ChatsModule } from './views/chats/chats.module';
 import { ChatModule } from './views/chat/chat.module';
 import { MessageService } from './services/message.service';
 
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { MessageSocket } from './services/message.socket';
+
+const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
+
 @NgModule({
   declarations: [
     AppComponent
@@ -26,6 +31,8 @@ import { MessageService } from './services/message.service';
 
     HttpClientModule,
 
+    SocketIoModule,
+
     ChatModule,
     ChatsModule,
     IndexModule,
@@ -37,6 +44,7 @@ import { MessageService } from './services/message.service';
     ChatService,
     MessageService,
     SettingsService,
+    MessageSocket,
     StorageService
   ],
   bootstrap: [AppComponent]

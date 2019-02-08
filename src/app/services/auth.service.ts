@@ -7,6 +7,7 @@ import { StorageService } from './storage.service';
 export class AuthService {
 
   public api = `https://ws-comunicacao.herokuapp.com/services`;
+  public messagesAPI = `https://python-socketio-example.herokuapp.com/services`;
 
   constructor(private httpClient: HttpClient, private storageService: StorageService) {
   }
@@ -16,6 +17,13 @@ export class AuthService {
     const headers = this.httpHeaders();
 
     return this.httpClient.post(url, JSON.stringify(credentials), headers);
+  }
+
+  public ticket(): Observable<any> {
+    const url = `${this.messagesAPI}/auth/ticket`;
+    const headers = this.httpHeadersWithBearerAuthorization();
+
+    return this.httpClient.get(url, headers);
   }
 
   private httpHeaders(): any {

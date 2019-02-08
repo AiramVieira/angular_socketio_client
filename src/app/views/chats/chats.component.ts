@@ -5,6 +5,8 @@ import { ChatSummary } from 'src/app/models/ChatSummary';
 import { Contact } from 'src/app/models/Contact';
 import { Chat } from 'src/app/models/Chat';
 import { Organization } from 'src/app/models/Organization';
+import { Message } from 'src/app/models/Message';
+import { MessageService } from 'src/app/services/message.service';
 
 @Component({
   selector: 'app-chats-view',
@@ -27,6 +29,7 @@ export class ChatsViewComponent implements OnInit {
 
   constructor(private events: Events,
     private chatService: ChatService,
+    private messageService: MessageService,
     private storageService: StorageService) {
     this.currentUser = storageService.get('user');
   }
@@ -95,6 +98,17 @@ export class ChatsViewComponent implements OnInit {
 
   public ngOnInit() {
     this.getFilteredChatsByContactId(this.currentUser.contact.id);
+
+    this.events.subscribe(`message::created`, (message: Message) => {
+      this.messageService.emit(`message::received`, {
+        serverId: message.serverId, contact: this.currentUser.contact
+      });
+    });
+    this.events.subscribe(`message::updated`, (message: Message) => {
+      this.messageService.emit(`message::received`, {
+        serverId: message.serverId, contact: this.currentUser.contact
+      });
+    });
   }
 
 }
